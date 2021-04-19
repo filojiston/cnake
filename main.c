@@ -3,15 +3,7 @@
 
 #include "snake.h"
 #include "food.h"
-
-#define TRUE 1
-#define FALSE 0
-
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 800;
-const int SCALE = 20;
-const int RECT_SIZE = 21;
-const char *TITLE = "Snake Game";
+#include "constants.h"
 
 void init_SDL();
 SDL_Window *create_window();
@@ -22,8 +14,8 @@ int main(int argc, char *args[])
 {
     int running = TRUE;
 
-    Snake *snake = create_snake(13, 12, RECT_SIZE, SCALE);
-    Food *food = create_food(30, 30, RECT_SIZE, SCALE);
+    Snake *snake = create_snake(13, 12);
+    Food *food = create_food(30, 30);
 
     init_SDL();
     SDL_Window *window = create_window();
@@ -37,7 +29,7 @@ int main(int argc, char *args[])
     SDL_Event event;
     while (running)
     {
-        SDL_Delay(10);
+        SDL_Delay(100);
         SDL_PollEvent(&event);
 
         switch (event.type)
@@ -46,7 +38,24 @@ int main(int argc, char *args[])
             running = FALSE;
             break;
             // TODO input handling goes below
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_UP:
+                move_snake(snake, UP);
+                break;
+            case SDLK_DOWN:
+                move_snake(snake, DOWN);
+                break;
+            case SDLK_LEFT:
+                move_snake(snake, LEFT);
+                break;
+            case SDLK_RIGHT:
+                move_snake(snake, RIGHT);
+                break;
+            }
         }
+        update_snake(snake);
 
         // clear window
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -91,12 +100,12 @@ SDL_Window *create_window()
 void draw_grid(SDL_Renderer *renderer)
 {
     // draw vertical lines
-    for (int i = 1; i < SCREEN_HEIGHT / SCALE; i++)
+    for (int i = 1; i < GRID_COUNT; i++)
     {
         SDL_RenderDrawLine(renderer, i * SCALE, 0, i * SCALE, SCREEN_HEIGHT);
     }
     // draw horizontal lines
-    for (int i = 1; i < SCREEN_WIDTH / SCALE; i++)
+    for (int i = 1; i < GRID_COUNT; i++)
     {
         SDL_RenderDrawLine(renderer, 0, i * SCALE, SCREEN_WIDTH, i * SCALE);
     }

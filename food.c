@@ -1,12 +1,12 @@
 #include "food.h"
 
-Food *create_food(int x, int y, int size, int scale)
+Food *create_food(int x, int y)
 {
     Food *new_food = (Food *)malloc(sizeof(Food));
     SDL_Rect food_rect;
-    food_rect.h = food_rect.w = size;
-    food_rect.x = x * scale;
-    food_rect.y = y * scale;
+    food_rect.h = food_rect.w = RECT_SIZE;
+    food_rect.x = x * SCALE;
+    food_rect.y = y * SCALE;
     new_food->food_cell = food_rect;
     return new_food;
 }
