@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include "constants.h"
+
 #include "linknode.h"
 
 LinkNode *new_node(int x, int y)

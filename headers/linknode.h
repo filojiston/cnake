@@ -1,8 +1,6 @@
 #pragma once
 
 #include <SDL2\SDL.h>
-#include <stdlib.h>
-#include "constants.h"
 
 typedef struct LinkNode
 {

@@ -1,4 +1,8 @@
+#include <stdlib.h>
+
+#include "constants.h"
 #include "snake.h"
+#include "food.h"
 
 // create a snake at given position
 Snake *create_snake(int x, int y)
@@ -102,10 +106,10 @@ void update_snake(Snake *s)
     update_node(s->head, s->head->xpos, s->head->ypos);
 }
 
-int eat_food(Snake *s, int xpos, int ypos)
+int eat_food(Snake *s, Food *food)
 {
     // if snake's head position is same with food's, snake will eat it
-    if ((s->head->xpos == xpos) && (s->head->ypos == ypos))
+    if ((s->head->xpos == food->xpos) && (s->head->ypos == food->ypos))
     {
         LinkNode *before_tail = s->tail->prev;
         LinkNode *node = NULL;

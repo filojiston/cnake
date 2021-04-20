@@ -13,13 +13,17 @@ SDL_Window *create_window();
 int handle_input();
 void draw_grid();
 
-SDL_Texture *set_score_texture(SDL_Renderer *renderer, SDL_Rect *text_rect, int score);
+void pause_game(int *paused);
+
+SDL_Texture *set_score_texture(SDL_Renderer *renderer, SDL_Rect *score_rect, int score);
+SDL_Texture *set_pause_texture(SDL_Renderer *renderer, SDL_Rect *pause_rect);
 
 int main(int argc, char *args[])
 {
     srand(time(NULL));
 
     int running = TRUE;
+    int paused = FALSE;
 
     Snake *snake = create_snake(13, 12);
     Food *food = create_food(30, 30);
@@ -35,22 +39,27 @@ int main(int argc, char *args[])
     }
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
-    SDL_Rect text_rect;
-    SDL_Texture *score_texture = set_score_texture(renderer, &text_rect, snake->size);
+    SDL_Rect score_rect;
+    SDL_Rect paused_rect;
+    SDL_Texture *score_texture = set_score_texture(renderer, &score_rect, snake->size);
+    SDL_Texture *paused_texture = set_pause_texture(renderer, &paused_rect);
 
     while (running)
     {
         SDL_Delay(100);
 
         // handle inputs
-        running = handle_input(snake);
+        running = handle_input(snake, &paused);
 
-        // update game
-        update_snake(snake);
-        if (eat_food(snake, food->xpos, food->ypos))
+        if (!paused)
         {
-            update_food(food, snake);
-            score_texture = set_score_texture(renderer, &text_rect, snake->size);
+            // update game
+            update_snake(snake);
+            if (eat_food(snake, food))
+            {
+                update_food(food, snake);
+                score_texture = set_score_texture(renderer, &score_rect, snake->size);
+            }
         }
 
         // clear window
@@ -61,7 +70,11 @@ int main(int argc, char *args[])
         draw_snake(renderer, snake);
         draw_food(renderer, food);
 
-        SDL_RenderCopy(renderer, score_texture, NULL, &text_rect);
+        SDL_RenderCopy(renderer, score_texture, NULL, &score_rect);
+        if (paused)
+        {
+            SDL_RenderCopy(renderer, paused_texture, NULL, &paused_rect);
+        }
 
         SDL_RenderPresent(renderer);
     }
@@ -101,7 +114,7 @@ SDL_Window *create_window()
     return SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 }
 
-int handle_input(Snake *snake)
+int handle_input(Snake *snake, int *paused)
 {
     SDL_Event event;
     SDL_PollEvent(&event);
@@ -126,6 +139,8 @@ int handle_input(Snake *snake)
         case SDLK_RIGHT:
             move_snake(snake, RIGHT);
             break;
+        case SDLK_p:
+            pause_game(paused);
         }
     }
 
@@ -147,7 +162,7 @@ void draw_grid(SDL_Renderer *renderer)
     return;
 }
 
-SDL_Texture *set_score_texture(SDL_Renderer *renderer, SDL_Rect *text_rect, int score)
+SDL_Texture *set_score_texture(SDL_Renderer *renderer, SDL_Rect *score_rect, int score)
 {
     char str[100];
     sprintf(str, "score: %d", score);
@@ -156,12 +171,37 @@ SDL_Texture *set_score_texture(SDL_Renderer *renderer, SDL_Rect *text_rect, int 
     SDL_Surface *text_surface = TTF_RenderText_Shaded(font, str, text_color, BACKGROUND_COLOR);
     SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
-    text_rect->x = 0;
-    text_rect->y = 0;
-    text_rect->w = text_surface->w;
-    text_rect->h = text_surface->h;
+    score_rect->x = 0;
+    score_rect->y = 0;
+    score_rect->w = text_surface->w;
+    score_rect->h = text_surface->h;
 
     SDL_FreeSurface(text_surface);
 
     return text_texture;
+}
+
+SDL_Texture *set_pause_texture(SDL_Renderer *renderer, SDL_Rect *pause_rect)
+{
+    TTF_Font *font = TTF_OpenFont("fonts\\arial.ttf", 30);
+    SDL_Color text_color = {0, 0, 0, 255};
+    SDL_Surface *pause_surface = TTF_RenderText_Shaded(font, "Game Paused.", text_color, BACKGROUND_COLOR);
+    SDL_Texture *pause_texture = SDL_CreateTextureFromSurface(renderer, pause_surface);
+
+    pause_rect->x = (SCREEN_WIDTH - pause_surface->w) * 0.5;
+    pause_rect->y = (SCREEN_HEIGHT - pause_surface->h) * 0.5;
+    pause_rect->w = pause_surface->w;
+    pause_rect->h = pause_surface->h;
+
+    SDL_FreeSurface(pause_surface);
+
+    return pause_texture;
+}
+
+void pause_game(int *paused)
+{
+    if (*(paused) == FALSE)
+        *paused = TRUE;
+    else
+        *paused = FALSE;
 }

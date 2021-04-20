@@ -1,4 +1,10 @@
+#include <stdlib.h>
+
+#include "constants.h"
+#include "linknode.h"
+
 #include "food.h"
+#include "snake.h"
 
 Food *create_food(int x, int y)
 {

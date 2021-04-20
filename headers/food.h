@@ -1,11 +1,6 @@
 #pragma once
 
 #include <SDL2\SDL.h>
-#include <stdlib.h>
-
-#include "constants.h"
-#include "linknode.h"
-#include "snake.h"
 
 typedef struct Food
 {
@@ -13,6 +8,8 @@ typedef struct Food
     int xpos;
     int ypos;
 } Food;
+
+typedef struct Snake Snake;
 
 Food *create_food(int x, int y);
 void destroy_food(Food *food);
