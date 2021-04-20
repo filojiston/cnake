@@ -20,6 +20,12 @@ Snake *create_snake(int x, int y)
 
 void destroy_snake(Snake *snake)
 {
+    LinkNode *iter = snake->head;
+    while (iter != NULL)
+    {
+        destroy_node(iter);
+        iter = iter->next;
+    }
     free(snake);
 }
 
@@ -83,4 +89,21 @@ void update_snake(Snake *s)
         update_node(s->head, s->head->xpos + 1, s->head->ypos);
         break;
     }
+}
+
+int eat_food(Snake *s, int xpos, int ypos)
+{
+    // if snake's head position is same with food's, snake will eat it
+    if ((s->head->xpos == xpos) && (s->head->ypos == ypos))
+    {
+        LinkNode *before_tail = s->tail->prev;
+        if (before_tail->xpos == s->tail->xpos)
+        {
+            return TRUE;
+        }
+
+        return TRUE;
+    }
+
+    return FALSE;
 }

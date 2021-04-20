@@ -23,3 +23,8 @@ void update_node(LinkNode *node, int x, int y)
     node->body_cell.x = x * SCALE;
     node->body_cell.y = y * SCALE;
 }
+
+void destroy_node(LinkNode *node)
+{
+    free(node);
+}

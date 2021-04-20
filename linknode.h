@@ -15,3 +15,4 @@ typedef struct LinkNode
 
 LinkNode *new_node(int x, int y);
 void update_node(LinkNode *node, int x, int y);
+void destroy_node(LinkNode *node);
