@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <SDL2\SDL_image.h>
 
 #include "constants.h"
 #include "snake.h"
@@ -19,9 +20,29 @@ Snake *create_snake(int x, int y)
 
     snake->size = 3;
 
+    snake->head_texture = NULL;
+    snake->body_texture = NULL;
+    snake->tail_texture = NULL;
+
     snake->direction = RIGHT;
 
     return snake;
+}
+
+void set_snake_texture(Snake *s, SDL_Renderer *renderer, const char *p_head, const char *p_body, const char *p_tail)
+{
+    if (p_head != NULL)
+    {
+        s->head_texture = IMG_LoadTexture(renderer, p_head);
+    }
+    if (p_body != NULL)
+    {
+        s->body_texture = IMG_LoadTexture(renderer, p_body);
+    }
+    if (p_tail != NULL)
+    {
+        s->tail_texture = IMG_LoadTexture(renderer, p_tail);
+    }
 }
 
 void destroy_snake(Snake *snake)
@@ -38,12 +59,44 @@ void destroy_snake(Snake *snake)
 void draw_snake(SDL_Renderer *renderer, Snake *s)
 {
     SDL_SetRenderDrawColor(renderer, SNAKE_COLOR.r, SNAKE_COLOR.g, SNAKE_COLOR.b, SNAKE_COLOR.a);
-    LinkNode *iter = s->head;
+    LinkNode *iter = s->head->next;
 
-    while (iter != NULL)
+    // draw head
+    if (s->head_texture == NULL)
     {
-        SDL_RenderFillRect(renderer, &(iter->body_cell));
-        iter = iter->next;
+        SDL_RenderFillRect(renderer, &(s->head->body_cell));
+    }
+    else
+    {
+        SDL_RenderCopy(renderer, s->head_texture, NULL, &(s->head->body_cell));
+    }
+
+    // draw body
+    if (s->body_texture == NULL)
+    {
+        while (iter->next != NULL)
+        {
+            SDL_RenderFillRect(renderer, &(iter->body_cell));
+            iter = iter->next;
+        }
+    }
+    else
+    {
+        while (iter->next != NULL)
+        {
+            SDL_RenderCopy(renderer, s->body_texture, NULL, &(iter->body_cell));
+            iter = iter->next;
+        }
+    }
+
+    // draw tail
+    if (s->tail_texture == NULL)
+    {
+        SDL_RenderFillRect(renderer, &(s->tail->body_cell));
+    }
+    else
+    {
+        SDL_RenderCopy(renderer, s->tail_texture, NULL, &(s->tail->body_cell));
     }
 }
 

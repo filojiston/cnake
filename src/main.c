@@ -1,5 +1,6 @@
 #include <SDL2\SDL.h>
 #include <SDL2\SDL_ttf.h>
+#include <SDL2\SDL_image.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -43,6 +44,11 @@ int main(int argc, char *args[])
     SDL_Rect paused_rect;
     SDL_Texture *score_texture = set_score_texture(renderer, &score_rect, snake->size);
     SDL_Texture *paused_texture = set_pause_texture(renderer, &paused_rect);
+
+    set_snake_texture(snake, renderer, NULL, NULL, NULL);
+    // set_snake_texture(snake, renderer, "res\\head.png", "res\\body.png", "res\\tail.png");
+    set_food_texture(food, renderer, NULL);
+    // set_food_texture(food, renderer, "res\\food3.png");
 
     while (running)
     {
@@ -104,6 +110,11 @@ int init_SDL()
     {
         printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
         return FALSE;
+    }
+
+    if (!IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG))
+    {
+        printf("SDL_image could not initialize! SDL_Image Error: %s\n", IMG_GetError());
     }
 
     return TRUE;

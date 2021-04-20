@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <SDL2\SDL_image.h>
 
 #include "constants.h"
 #include "linknode.h"
@@ -17,7 +18,16 @@ Food *create_food(int x, int y)
     new_food->xpos = x;
     new_food->ypos = y;
 
+    new_food->food_texture = NULL;
+
     return new_food;
+}
+
+void set_food_texture(Food *food, SDL_Renderer *renderer, const char *tex_path)
+{
+    if (tex_path == NULL)
+        return;
+    food->food_texture = IMG_LoadTexture(renderer, tex_path);
 }
 
 void destroy_food(Food *food)
@@ -27,8 +37,15 @@ void destroy_food(Food *food)
 
 void draw_food(SDL_Renderer *renderer, Food *food)
 {
-    SDL_SetRenderDrawColor(renderer, FOOD_COLOR.r, FOOD_COLOR.g, FOOD_COLOR.b, FOOD_COLOR.a);
-    SDL_RenderFillRect(renderer, &(food->food_cell));
+    if (food->food_texture != NULL)
+    {
+        SDL_RenderCopy(renderer, food->food_texture, NULL, &(food->food_cell));
+    }
+    else
+    {
+        SDL_SetRenderDrawColor(renderer, FOOD_COLOR.r, FOOD_COLOR.g, FOOD_COLOR.b, FOOD_COLOR.a);
+        SDL_RenderFillRect(renderer, &(food->food_cell));
+    }
 }
 
 // re-locate the food when snake eats it
