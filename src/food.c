@@ -21,7 +21,7 @@ void destroy_food(Food *food)
 
 void draw_food(SDL_Renderer *renderer, Food *food)
 {
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_SetRenderDrawColor(renderer, FOOD_COLOR.r, FOOD_COLOR.g, FOOD_COLOR.b, FOOD_COLOR.a);
     SDL_RenderFillRect(renderer, &(food->food_cell));
 }
 

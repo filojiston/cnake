@@ -13,6 +13,8 @@ Snake *create_snake(int x, int y)
     snake->tail->prev = snake->head->next;
     snake->tail->prev->prev = snake->head;
 
+    snake->size = 3;
+
     snake->direction = RIGHT;
 
     return snake;
@@ -31,7 +33,7 @@ void destroy_snake(Snake *snake)
 
 void draw_snake(SDL_Renderer *renderer, Snake *s)
 {
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, SNAKE_COLOR.r, SNAKE_COLOR.g, SNAKE_COLOR.b, SNAKE_COLOR.a);
     LinkNode *iter = s->head;
 
     while (iter != NULL)
@@ -77,18 +79,27 @@ void update_snake(Snake *s)
     switch (s->direction)
     {
     case UP:
-        update_node(s->head, s->head->xpos, s->head->ypos - 1);
+        (s->head->ypos)--;
+        if (s->head->ypos < 0)
+            s->head->ypos = GRID_COUNT - 1;
         break;
     case DOWN:
-        update_node(s->head, s->head->xpos, s->head->ypos + 1);
+        (s->head->ypos)++;
+        if (s->head->ypos > GRID_COUNT - 1)
+            s->head->ypos = 0;
         break;
     case LEFT:
-        update_node(s->head, s->head->xpos - 1, s->head->ypos);
+        (s->head->xpos)--;
+        if (s->head->xpos < 0)
+            s->head->xpos = GRID_COUNT - 1;
         break;
     case RIGHT:
-        update_node(s->head, s->head->xpos + 1, s->head->ypos);
+        (s->head->xpos)++;
+        if (s->head->xpos > GRID_COUNT - 1)
+            s->head->xpos = 0;
         break;
     }
+    update_node(s->head, s->head->xpos, s->head->ypos);
 }
 
 int eat_food(Snake *s, int xpos, int ypos)
@@ -97,33 +108,20 @@ int eat_food(Snake *s, int xpos, int ypos)
     if ((s->head->xpos == xpos) && (s->head->ypos == ypos))
     {
         LinkNode *before_tail = s->tail->prev;
-        LinkNode *node;
+        LinkNode *node = NULL;
         if (before_tail->xpos == s->tail->xpos)
         {
-            if (s->direction == UP)
-            {
-                node = new_node(before_tail->xpos, before_tail->ypos + 1);
-            }
-            else if (s->direction == DOWN)
-            {
-                node = new_node(before_tail->xpos, before_tail->ypos - 1);
-            }
+            node = new_node(s->tail->xpos, (s->tail->ypos) + (s->tail->ypos - before_tail->ypos));
         }
         else if (before_tail->ypos == s->tail->ypos)
         {
-            if (s->direction == LEFT)
-            {
-                node = new_node(before_tail->xpos + 1, before_tail->ypos);
-            }
-            else if (s->direction == RIGHT)
-            {
-                node = new_node(before_tail->xpos - 1, before_tail->ypos);
-            }
+            node = new_node((s->tail->xpos) + (s->tail->xpos - before_tail->xpos), s->tail->ypos);
         }
 
         s->tail->next = node;
         node->prev = s->tail;
         s->tail = node;
+        (s->size)++;
         return TRUE;
     }
 

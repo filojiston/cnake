@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL2\SDL.h>
 #include <stdlib.h>
 
 #include "linknode.h"
@@ -12,6 +12,7 @@ typedef struct Snake
     LinkNode *head;
     LinkNode *tail;
     Direction direction;
+    int size;
 } Snake;
 
 Snake *create_snake(int x, int y);
