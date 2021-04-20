@@ -97,11 +97,33 @@ int eat_food(Snake *s, int xpos, int ypos)
     if ((s->head->xpos == xpos) && (s->head->ypos == ypos))
     {
         LinkNode *before_tail = s->tail->prev;
+        LinkNode *node;
         if (before_tail->xpos == s->tail->xpos)
         {
-            return TRUE;
+            if (s->direction == UP)
+            {
+                node = new_node(before_tail->xpos, before_tail->ypos + 1);
+            }
+            else if (s->direction == DOWN)
+            {
+                node = new_node(before_tail->xpos, before_tail->ypos - 1);
+            }
+        }
+        else if (before_tail->ypos == s->tail->ypos)
+        {
+            if (s->direction == LEFT)
+            {
+                node = new_node(before_tail->xpos + 1, before_tail->ypos);
+            }
+            else if (s->direction == RIGHT)
+            {
+                node = new_node(before_tail->xpos - 1, before_tail->ypos);
+            }
         }
 
+        s->tail->next = node;
+        node->prev = s->tail;
+        s->tail = node;
         return TRUE;
     }
 
