@@ -68,7 +68,21 @@ void draw_snake(SDL_Renderer *renderer, Snake *s)
     }
     else
     {
-        SDL_RenderCopy(renderer, s->head_texture, NULL, &(s->head->body_cell));
+        switch (s->direction)
+        {
+        case UP:
+            SDL_RenderCopy(renderer, s->head_texture, NULL, &(s->head->body_cell));
+            break;
+        case DOWN:
+            SDL_RenderCopyEx(renderer, s->head_texture, NULL, &(s->head->body_cell), 180, NULL, SDL_FLIP_NONE);
+            break;
+        case LEFT:
+            SDL_RenderCopyEx(renderer, s->head_texture, NULL, &(s->head->body_cell), 270, NULL, SDL_FLIP_NONE);
+            break;
+        case RIGHT:
+            SDL_RenderCopyEx(renderer, s->head_texture, NULL, &(s->head->body_cell), 90, NULL, SDL_FLIP_NONE);
+            break;
+        }
     }
 
     // draw body
@@ -96,7 +110,34 @@ void draw_snake(SDL_Renderer *renderer, Snake *s)
     }
     else
     {
-        SDL_RenderCopy(renderer, s->tail_texture, NULL, &(s->tail->body_cell));
+        // SDL_RenderCopy(renderer, s->tail_texture, NULL, &(s->tail->body_cell));
+        LinkNode *before_tail = s->tail->prev;
+
+        // moving vertically
+        if (before_tail->xpos == s->tail->xpos)
+        {
+            int diff = (s->tail->ypos - before_tail->ypos);
+            if (diff < 0) // rotate 180
+            {
+                SDL_RenderCopyEx(renderer, s->tail_texture, NULL, &(s->tail->body_cell), 180, NULL, SDL_FLIP_NONE);
+            }
+            else
+            {
+                SDL_RenderCopy(renderer, s->tail_texture, NULL, &(s->tail->body_cell));
+            }
+        }
+        else
+        {
+            int diff = (s->tail->xpos - before_tail->xpos);
+            if (diff < 0) // rotate 90
+            {
+                SDL_RenderCopyEx(renderer, s->tail_texture, NULL, &(s->tail->body_cell), 90, NULL, SDL_FLIP_NONE);
+            }
+            else // rotate 270
+            {
+                SDL_RenderCopyEx(renderer, s->tail_texture, NULL, &(s->tail->body_cell), 270, NULL, SDL_FLIP_NONE);
+            }
+        }
     }
 }
 

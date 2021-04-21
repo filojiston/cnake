@@ -27,7 +27,7 @@ int main(int argc, char *args[])
     int paused = FALSE;
 
     Snake *snake = create_snake(13, 12);
-    Food *food = create_food(30, 30);
+    Food *food = create_food(20, 20);
 
     if (!init_SDL())
         return 1;
@@ -45,10 +45,11 @@ int main(int argc, char *args[])
     SDL_Texture *score_texture = set_score_texture(renderer, &score_rect, snake->size);
     SDL_Texture *paused_texture = set_pause_texture(renderer, &paused_rect);
 
-    set_snake_texture(snake, renderer, NULL, NULL, NULL);
-    // set_snake_texture(snake, renderer, "res\\head.png", "res\\body.png", "res\\tail.png");
-    set_food_texture(food, renderer, NULL);
-    // set_food_texture(food, renderer, "res\\food3.png");
+    // set_snake_texture(snake, renderer, NULL, NULL, NULL);
+    set_snake_texture(snake, renderer, "res\\head.png", "res\\body.png", "res\\tail.png");
+    // set_snake_texture(snake, renderer, "res\\head.png", NULL, "res\\tail.png");
+    // set_food_texture(food, renderer, NULL);
+    set_food_texture(food, renderer, "res\\food.png");
 
     while (running)
     {
