@@ -139,16 +139,20 @@ int handle_input(Snake *snake, int *paused)
         switch (event.key.keysym.sym)
         {
         case SDLK_UP:
-            move_snake(snake, UP);
+            if (!(*paused))
+                move_snake(snake, UP);
             break;
         case SDLK_DOWN:
-            move_snake(snake, DOWN);
+            if (!(*paused))
+                move_snake(snake, DOWN);
             break;
         case SDLK_LEFT:
-            move_snake(snake, LEFT);
+            if (!(*paused))
+                move_snake(snake, LEFT);
             break;
         case SDLK_RIGHT:
-            move_snake(snake, RIGHT);
+            if (!(*paused))
+                move_snake(snake, RIGHT);
             break;
         case SDLK_p:
             pause_game(paused);
