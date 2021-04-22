@@ -10,12 +10,8 @@
 
 int init_SDL();
 SDL_Window *create_window();
-
 int handle_input();
-void draw_grid();
-
 void pause_game(int *paused);
-
 SDL_Texture *set_score_texture(SDL_Renderer *renderer, SDL_Rect *score_rect, int score);
 SDL_Texture *set_pause_texture(SDL_Renderer *renderer, SDL_Rect *pause_rect);
 
@@ -45,10 +41,7 @@ int main(int argc, char *args[])
     SDL_Texture *score_texture = set_score_texture(renderer, &score_rect, snake->size);
     SDL_Texture *paused_texture = set_pause_texture(renderer, &paused_rect);
 
-    // set_snake_texture(snake, renderer, NULL, NULL, NULL);
     set_snake_texture(snake, renderer, "res\\head.png", "res\\body.png", "res\\tail.png");
-    // set_snake_texture(snake, renderer, "res\\head.png", NULL, "res\\tail.png");
-    // set_food_texture(food, renderer, NULL);
     set_food_texture(food, renderer, "res\\food.png");
 
     while (running)
@@ -73,7 +66,7 @@ int main(int argc, char *args[])
         SDL_SetRenderDrawColor(renderer, BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, BACKGROUND_COLOR.a);
         SDL_RenderClear(renderer);
 
-        // draw_grid(renderer);
+        // draw each element to window
         draw_snake(renderer, snake);
         draw_food(renderer, food);
 
@@ -83,12 +76,14 @@ int main(int argc, char *args[])
             SDL_RenderCopy(renderer, paused_texture, NULL, &paused_rect);
         }
 
+        // render the window
         SDL_RenderPresent(renderer);
     }
 
     // cleanup SDL
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(score_texture);
+    SDL_DestroyTexture(paused_texture);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
@@ -161,21 +156,6 @@ int handle_input(Snake *snake, int *paused)
     }
 
     return TRUE;
-}
-
-void draw_grid(SDL_Renderer *renderer)
-{
-    // draw vertical lines
-    for (int i = 1; i < GRID_COUNT; i++)
-    {
-        SDL_RenderDrawLine(renderer, i * SCALE, 0, i * SCALE, SCREEN_HEIGHT);
-    }
-    // draw horizontal lines
-    for (int i = 1; i < GRID_COUNT; i++)
-    {
-        SDL_RenderDrawLine(renderer, 0, i * SCALE, SCREEN_WIDTH, i * SCALE);
-    }
-    return;
 }
 
 SDL_Texture *set_score_texture(SDL_Renderer *renderer, SDL_Rect *score_rect, int score)

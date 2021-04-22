@@ -5,12 +5,10 @@
 #include "snake.h"
 #include "food.h"
 
-// create a snake at given position
 Snake *create_snake(int x, int y)
 {
     Snake *snake = (Snake *)malloc(sizeof(Snake));
 
-    // create snake's head
     snake->head = new_node(x, y);
     snake->head->next = new_node(x - 1, y);
     snake->head->next->next = new_node(x - 2, y);
@@ -56,6 +54,7 @@ void destroy_snake(Snake *snake)
     free(snake);
 }
 
+// if texture is null, draws a rectangle; else draws the texture
 void draw_snake(SDL_Renderer *renderer, Snake *s)
 {
     SDL_SetRenderDrawColor(renderer, SNAKE_COLOR.r, SNAKE_COLOR.g, SNAKE_COLOR.b, SNAKE_COLOR.a);
@@ -68,6 +67,7 @@ void draw_snake(SDL_Renderer *renderer, Snake *s)
     }
     else
     {
+        // rotate the head texture for drawing correctly, based on direction of the head
         switch (s->direction)
         {
         case UP:
@@ -110,14 +110,15 @@ void draw_snake(SDL_Renderer *renderer, Snake *s)
     }
     else
     {
-        // SDL_RenderCopy(renderer, s->tail_texture, NULL, &(s->tail->body_cell));
+        // rotate the tail texture for drawing correctly, based on location
+        // of the body cell right before the tail (tail->prev)
         LinkNode *before_tail = s->tail->prev;
 
         // moving vertically
         if (before_tail->xpos == s->tail->xpos)
         {
             int diff = (s->tail->ypos - before_tail->ypos);
-            if (diff < 0) // rotate 180
+            if (diff < 0)
             {
                 SDL_RenderCopyEx(renderer, s->tail_texture, NULL, &(s->tail->body_cell), 180, NULL, SDL_FLIP_NONE);
             }
@@ -126,14 +127,15 @@ void draw_snake(SDL_Renderer *renderer, Snake *s)
                 SDL_RenderCopy(renderer, s->tail_texture, NULL, &(s->tail->body_cell));
             }
         }
+        // moving horizontally
         else
         {
             int diff = (s->tail->xpos - before_tail->xpos);
-            if (diff < 0) // rotate 90
+            if (diff < 0)
             {
                 SDL_RenderCopyEx(renderer, s->tail_texture, NULL, &(s->tail->body_cell), 90, NULL, SDL_FLIP_NONE);
             }
-            else // rotate 270
+            else
             {
                 SDL_RenderCopyEx(renderer, s->tail_texture, NULL, &(s->tail->body_cell), 270, NULL, SDL_FLIP_NONE);
             }
@@ -197,6 +199,7 @@ void update_snake(Snake *s)
             s->head->xpos = 0;
         break;
     }
+
     update_node(s->head, s->head->xpos, s->head->ypos);
 }
 

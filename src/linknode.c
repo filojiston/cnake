@@ -8,6 +8,7 @@ LinkNode *new_node(int x, int y)
     LinkNode *node = (LinkNode *)malloc(sizeof(LinkNode));
     SDL_Rect body_rect;
     body_rect.h = body_rect.w = RECT_SIZE;
+    // multiplying positions with SCALE for getting exact positions on screen
     body_rect.x = x * SCALE;
     body_rect.y = y * SCALE;
     node->body_cell = body_rect;

@@ -12,6 +12,7 @@ Food *create_food(int x, int y)
     Food *new_food = (Food *)malloc(sizeof(Food));
     SDL_Rect food_rect;
     food_rect.h = food_rect.w = RECT_SIZE;
+    // multiplying positions with SCALE for getting exact positions on screen
     food_rect.x = x * SCALE;
     food_rect.y = y * SCALE;
     new_food->food_cell = food_rect;
@@ -37,6 +38,7 @@ void destroy_food(Food *food)
 
 void draw_food(SDL_Renderer *renderer, Food *food)
 {
+    // if texture is null, draw a rectangle, else draw the texture
     if (food->food_texture != NULL)
     {
         SDL_RenderCopy(renderer, food->food_texture, NULL, &(food->food_cell));
@@ -59,10 +61,10 @@ void update_food(Food *food, Snake *snake)
     {
         unique = TRUE;
         // select a random position in grid
+        // if snake is in that position, re-locate the food
         rand_xpos = (rand() % ((GRID_COUNT - 1) - 1 + 1)) + 1;
         rand_ypos = (rand() % ((GRID_COUNT - 1) - 1 + 1)) + 1;
 
-        // if snake is in that position, re-locate the food
         while (iter != NULL)
         {
             if (rand_xpos == iter->xpos && rand_ypos == iter->ypos)
