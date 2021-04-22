@@ -14,3 +14,10 @@ gcc src\*.c -o snakegame -ID:\sources\include -Iheaders -LD:\sources\lib -lmingw
 
 I've used windows for building this project, so yours can be a little bit different than mine.
 After compilation, just run the executable **snakegame**.
+
+## Gameplay
+
+1. Use arrow keys (↑, ↓, ←, →) for moving around
+2. Use P key for pausing the game
+
+That's all!
